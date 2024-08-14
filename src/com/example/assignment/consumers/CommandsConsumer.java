@@ -34,6 +34,6 @@ public class CommandsConsumer implements Runnable{
     }
 
     private void addUser(Add add){
-        userRepository.addUser(add.getId(),add.getGuid(),add.getName());
+        userRepository.addUser(new User(add.getId(),add.getGuid(),add.getName()));
     }
 }
