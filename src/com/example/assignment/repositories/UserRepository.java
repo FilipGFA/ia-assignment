@@ -4,6 +4,8 @@ import com.example.assignment.models.User;
 import com.example.assignment.utils.DBCon;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepository {
 
@@ -40,17 +42,25 @@ public class UserRepository {
         }
     }
 
+     public List<User> getAllUsers(){
+        List<User> output = new ArrayList<>();
+         try {
+             statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * from SUSERS");
+             while (resultSet.next()) {
+                 output.add(new User(Integer.parseInt(resultSet.getString("USER_ID")),
+                         resultSet.getString("USER_GUID"),
+                         resultSet.getString("USER_NAME")));
+             }
+         } catch(SQLException throwables){
+             throwables.printStackTrace();
+         }
+         return output;
+     }
+
     public void printAll() {
-        try {
-            ResultSet resultSet = statement.executeQuery("SELECT * from SUSERS");
-            while (resultSet.next()) {
-                User user = new User(Integer.parseInt(resultSet.getString("USER_ID")),
-                        resultSet.getString("USER_GUID"),
-                        resultSet.getString("USER_NAME"));
-                System.out.println(user);
-            }
-        } catch(SQLException throwables){
-                throwables.printStackTrace();
+        for(User user : getAllUsers()){
+            System.out.println(user);
         }
     }
 

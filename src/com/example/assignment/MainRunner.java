@@ -16,16 +16,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MainRunner {
     public static void main(String[] args) {
         if(!prepareTable()) return;
+        int nConsumers = 2;
         List<Command> commands = new ArrayList<>();
         commands.add(new Add(1, "a1", "Robert"));
         commands.add(new Add(2, "a2", "Martin"));
         commands.add(new PrintAll());
         commands.add(new DeleteAll());
         commands.add(new PrintAll());
-        commands.add(new PoisonPill());
         BlockingQueue<Command> queue = new LinkedBlockingQueue<>();
-        new Thread(new CommandsProducer(queue, commands)).start();
-        new Thread(new CommandsConsumer(queue)).start();
+        new Thread(new CommandsProducer(queue, commands, nConsumers)).start();
+        for (int i = 0; i < nConsumers; i++){
+            new Thread(new CommandsConsumer(queue)).start();
+        }
     }
 
     private static boolean prepareTable(){
