@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -86,5 +88,20 @@ public class UserRepositoryTest {
         userRepository.deleteAll();
         List<User> users = userRepository.getAllUsers();
         Assertions.assertEquals(0, users.size());
+    }
+
+    @Test
+    public void printAllUsersWithOneUser(){
+        UserRepository userRepository = new UserRepository();
+        userRepository.openConnection();
+        User user = new User(1,"aa","Ivan");
+        userRepository.addUser(user);
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(outContent));
+        userRepository.printAll();
+        String output = outContent.toString();
+        Assertions.assertEquals(user.toString(), output.trim());
+        System.setOut(originalOut);
     }
 }
